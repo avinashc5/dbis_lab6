@@ -1,0 +1,9 @@
+Use SDK 55:
+npx expo install expo@latest
+npx expo upgrade
+
+package.json: "expo": "^55.x.x"
+
+then start the frontend
+
+for backend, first load the environment variables: source ./env

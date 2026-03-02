@@ -39,14 +39,7 @@ The Checkout button should navigate to checkout page, i.e. /checkout
        try {
            const response = await apiCall('/display-cart', { method: 'GET' });
            console.log('Cart response:', response);
-           
-           // Convert string prices to numbers
-           const cartData = (response?.cart || []).map((item: any) => ({
-               ...item,
-               price: parseFloat(item.price),
-               total_price: parseFloat(item.total_price),
-           }));
-           
+           const cartData = response?.cart || [];
            setCartItems(cartData);
            setTotalPrice(parseFloat(response?.totalPrice) || 0);
        } catch (error) {
@@ -111,22 +104,19 @@ The Checkout button should navigate to checkout page, i.e. /checkout
                         <Text>Your cart is empty</Text>
                     </View>
                 ) : (
-                    <View style={{ flex: 1 }}>
-                        {/* Render FlatList of CartItem components here */}
-                        <FlatList
-                            data={cartItems}
-                            renderItem={renderItem}
-                            keyExtractor={(item) => item.product_id.toString()}
-                            ListFooterComponent={
-                                <View style={styles.totalContainer}>
-                                    <Text style={styles.totalText}>Total: ${totalPrice.toFixed(2)}</Text>
-                                    <TouchableOpacity style={styles.checkoutButton} onPress={() => router.push('/checkout')}>
-                                        <Text style={styles.checkoutButtonText}>Checkout</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                        />
-                    </View>
+                    <FlatList
+                        data={cartItems}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => item.item_id.toString()}
+                        ListFooterComponent={
+                            <View style={styles.totalContainer}>
+                                <Text style={styles.totalText}>Total: ${totalPrice.toFixed(2)}</Text>
+                                <TouchableOpacity style={styles.checkoutButton} onPress={() => router.push('/checkout')}>
+                                    <Text style={styles.checkoutButtonText}>Checkout</Text>
+                                </TouchableOpacity>
+                            </View>
+                        }
+                    />
                 )}
             </KeyboardAvoidingView>
         </SafeAreaView>
