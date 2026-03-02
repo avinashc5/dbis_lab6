@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { View, Text, KeyboardAvoidingView, Platform, ListRenderItemInfo, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, KeyboardAvoidingView, Platform, ListRenderItemInfo, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import CartItem from '../../components/CartItem';
@@ -38,7 +38,6 @@ The Checkout button should navigate to checkout page, i.e. /checkout
        setLoading(true);
        try {
            const response = await apiCall('/display-cart', { method: 'GET' });
-           console.log('Cart response:', response);
            const cartData = response?.cart || [];
            setCartItems(cartData);
            setTotalPrice(parseFloat(response?.totalPrice) || 0);
@@ -84,39 +83,46 @@ The Checkout button should navigate to checkout page, i.e. /checkout
                 <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 >
-                    {/* Return ActivityIndicator component here */
+                    {/* Return ActivityIndicator component here */}
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text>Loading...</Text>
+                        <ActivityIndicator size="large" color="#007AFF" />
                     </View>
-                    }
                 </KeyboardAvoidingView>
             </SafeAreaView>
         );
     }
     return (
-        <SafeAreaView edges={['top', 'left', 'right']}>
+        <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                style={{ flex: 1 }}
             >
-                <Text style={styles.header}>My Cart</Text>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>My Cart</Text>
+                </View>
                 {cartItems.length === 0 ? (
                     <View style={styles.emptyCart}>
-                        <Text>Your cart is empty</Text>
+                        <Text style={styles.emptyCartText}>Your cart is empty</Text>
                     </View>
                 ) : (
-                    <FlatList
-                        data={cartItems}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item.item_id.toString()}
-                        ListFooterComponent={
-                            <View style={styles.totalContainer}>
-                                <Text style={styles.totalText}>Total: ${totalPrice.toFixed(2)}</Text>
-                                <TouchableOpacity style={styles.checkoutButton} onPress={() => router.push('/checkout')}>
-                                    <Text style={styles.checkoutButtonText}>Checkout</Text>
-                                </TouchableOpacity>
+                    <View style={{ flex: 1 }}>
+                        <FlatList
+                            data={cartItems}
+                            renderItem={renderItem}
+                            keyExtractor={(item) => item.item_id.toString()}
+                            scrollEnabled={true}
+                            contentContainerStyle={styles.listContent}
+                        />
+                        <View style={styles.totalContainer}>
+                            <View style={styles.totalInfo}>
+                                <Text style={styles.totalLabel}>Total Price</Text>
+                                <Text style={styles.totalText}>₹{totalPrice.toFixed(2)}</Text>
                             </View>
-                        }
-                    />
+                            <TouchableOpacity style={styles.checkoutButton} onPress={() => router.push('/checkout')}>
+                                <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 )}
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -124,38 +130,85 @@ The Checkout button should navigate to checkout page, i.e. /checkout
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#f8f9fa',
+    },
     header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
+        backgroundColor: '#fff',
+        paddingVertical: 18,
+        paddingHorizontal: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e8e8e8',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    headerText: {
+        fontSize: 28,
+        fontWeight: '700',
+        color: '#1a1a1a',
     },
     emptyCart: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+    emptyCartText: {
+        fontSize: 16,
+        color: '#999',
+    },
+    listContent: {
+        paddingHorizontal: 12,
+        paddingVertical: 12,
     },
     totalContainer: {
-        marginTop: 20,
-        padding: 15,
+        backgroundColor: '#fff',
+        paddingHorizontal: 16,
+        paddingVertical: 16,
         borderTopWidth: 1,
-        borderColor: '#ccc',
+        borderTopColor: '#e8e8e8',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        gap: 12,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    totalInfo: {
+        flex: 1,
+    },
+    totalLabel: {
+        fontSize: 12,
+        color: '#888',
+        marginBottom: 4,
     },
     totalText: {
-        fontSize: 18,
-        fontWeight: 'bold',
+        fontSize: 24,
+        fontWeight: '700',
+        color: '#2c3e50',
     },
     checkoutButton: {
         backgroundColor: '#007AFF',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
+        paddingVertical: 14,
+        paddingHorizontal: 24,
+        borderRadius: 10,
+        shadowColor: '#007AFF',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 5,
     },
     checkoutButtonText: {
         color: '#fff',
         fontSize: 16,
+        fontWeight: '600',
+        textAlign: 'center',
     },
 });

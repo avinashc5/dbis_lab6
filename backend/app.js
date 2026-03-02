@@ -25,10 +25,10 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
-      "http://10.51.9.175:3000",
-      "http://10.51.9.175:8081",
-      "http://10.51.9.175:3001",
-      "http://10.51.9.175:4000",
+      "http://192.168.0.110:3000",
+      "http://192.168.0.110:3001",
+      "http://192.168.0.110:8081",
+      "http://192.168.0.110:4000",
       "http://localhost:3000",
       "http://localhost:3001",
       "http://localhost:8081",
@@ -118,7 +118,6 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/isLoggedIn", async (req, res) => {
-  console.log('isLoggedIn')
   if (req.session.userId) {
     res
       .status(200)

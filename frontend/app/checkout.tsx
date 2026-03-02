@@ -42,7 +42,7 @@ export default function Checkout() {
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             >
                 <ScrollView>
-                    <Text>Shipping Address</Text>
+                    <Text style={styles.title}>Shipping Address</Text>
 
                     {/* 
                         1. Create TextInput for Street
@@ -50,7 +50,7 @@ export default function Checkout() {
                         3. Create a Row with TextInputs for State and Pincode
                         4. Bind all inputs to the address state
                     */}
-                    <View>
+                    <View style={{ paddingHorizontal: 20 }}>
                         <TextInput
                             placeholder="Street"
                             value={address.street}
@@ -97,6 +97,12 @@ export default function Checkout() {
 }
 
 const styles = StyleSheet.create({
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginVertical: 20,
+    },
     input: {
         borderWidth: 1,
         borderColor: '#ccc',
@@ -117,6 +123,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center',
         marginTop: 20,
+        marginHorizontal: 20,
     },
     placeOrderButtonText: {
         color: '#fff',
