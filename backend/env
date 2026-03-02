@@ -1,0 +1,6 @@
+export PGUSER=avinashc5
+export PGPASSWORD=avinashc5
+export PGHOST=localhost
+export PGPORT=5432
+export PGDATABASE=cs349_lab6
+export SESSION_SECRET=supersecretkey
